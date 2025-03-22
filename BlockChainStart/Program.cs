@@ -1,41 +1,69 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿internal class Program
+    {
+    public static int Port = 501;
+    private static WebSocketServer? _server = null;
+    private static WebSocketClientProject _client = new();
+    public static Blockchain? AmirCoin = new();
+    private static string _name = "Amir";
 
-using BlockChainStart.BlockChains;
-using BlockChainStart.Transactions;
-using Newtonsoft.Json;
+    private static void Main ( string[] args )
+        {
+        AmirCoin.InitializeChain();
 
-var beginTime = DateTime.UtcNow.TimeOfDay;
+        if (args.Length >= 1)
+            Port = int.Parse(args[0]);
+        if (args.Length >= 2)
+            _name = args[1];
 
-var AmirCoin = new Blockchain();
+        if (Port > 0)
+            {
+            _server = new WebSocketServer();
+            _server.Start();
+            }
+        if (_name != "Unknown")
+            {
+            Console.WriteLine($"Current user is {_name}");
+            }
 
-AmirCoin.CreateTransaction(new Transaction("Amir","Mohammad",75.75));
-AmirCoin.ProcessPendingTransaction("Taqi");
-AmirCoin.CreateTransaction(new Transaction("Amir2", "Mohammad2", 70.70));
-AmirCoin.CreateTransaction(new Transaction("Amir3", "Mohammad3", 80.80));
-AmirCoin.CreateTransaction(new Transaction("Amir4", "Amir", 85.85));
-AmirCoin.ProcessPendingTransaction("Kambiz");
+        Console.WriteLine("=========================");
+        Console.WriteLine("1. Connect to a server");
+        Console.WriteLine("2. Add a transaction");
+        Console.WriteLine("3. Display Blockchain");
+        Console.WriteLine("4. Exit");
+        Console.WriteLine("=========================");
 
+        var selection = 0;
+        while (selection != 4)
+            {
+            switch (selection)
+                {
+                case 1:
+                    Console.WriteLine("Please enter the server URL");
+                    var serverUrl = Console.ReadLine();
+                    _client.Connect($"{serverUrl}/Blockchain");
+                    break;
+                case 2:
+                    Console.WriteLine("Please enter the receiver name");
+                    var receiverName = Console.ReadLine();
+                    Console.WriteLine("Please enter the amount");
+                    var withdrawAmount = Console.ReadLine();
+                    if (receiverName is not null)
+                        AmirCoin.CreateTransaction(new Transaction(_name, receiverName, int.Parse(withdrawAmount)));
+                    AmirCoin.ProcessPendingTransaction(_name);
+                    _client.Broadcast(JsonConvert.SerializeObject(AmirCoin));
+                    break;
+                case 3:
+                    Console.WriteLine("Blockchain");
+                    Console.WriteLine(JsonConvert.SerializeObject(AmirCoin, Formatting.Indented));
+                    break;
 
+                }
 
+            Console.WriteLine("Please select an action");
+            var action = Console.ReadLine();
+            if (action is not null) selection = int.Parse(action);
+            }
 
-var endTime = DateTime.UtcNow.TimeOfDay;
-
-var elapsedTime= endTime - beginTime;
-
-#region Before Manuipulation
-
-var resultJson1 = JsonConvert.SerializeObject(AmirCoin, Formatting.Indented);
-
-Console.WriteLine(resultJson1);
-
-var hashValidation1 = $"Is Chain Valid:  -> {AmirCoin.IsValid()}";
-
-Console.WriteLine(hashValidation1);
-Console.WriteLine($"Duration:   {elapsedTime} ");
-Console.WriteLine(AmirCoin.GetBalance("Amir"));
-#endregion
-
-       
-Console.WriteLine();
-
-Console.ReadKey();
+        _client.Close();
+        }
+    }

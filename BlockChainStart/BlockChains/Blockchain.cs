@@ -17,8 +17,6 @@ public class Blockchain
     public Blockchain ()
         {
 
-        InitializeChain();
-        AddGenesisBlock();
         }
 
 
@@ -40,6 +38,7 @@ public class Blockchain
     public void InitializeChain ()
         {
         Chain = new List<Block>();
+        AddGenesisBlock();
         }
 
     public void AddGenesisBlock ()
