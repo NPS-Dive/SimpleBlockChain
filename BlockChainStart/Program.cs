@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Text.Json.Nodes;
 using BlockChainStart.BlockChains;
 using Newtonsoft.Json;
 
@@ -22,7 +21,7 @@ var resultJson1 = JsonConvert.SerializeObject(AmirCoin, Formatting.Indented);
 Console.WriteLine(resultJson1);
 
 var hashValidation1 = $"Is Chain Valid:  -> {AmirCoin.IsValid()}";
-    
+
 Console.WriteLine(hashValidation1);
 #endregion
 
