@@ -1,4 +1,5 @@
-﻿using System.Runtime.Intrinsics.Arm;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -11,6 +12,7 @@ public class Block
     public string PreviousHash { get; set; }
     public string Hash { get; set; }
     public string Data { get; set; }
+    public int Nonce { get; set; }
 
     #region constructor
 
@@ -26,11 +28,22 @@ public class Block
     #endregion
 
     public string CalculateHash ()
-    {
+        {
         var sha256 = SHA256.Create();
-        byte[] inputByte = Encoding.ASCII.GetBytes($"{CreatedAt}-{PreviousHash ?? ""}-{Data}");
+        byte[] inputByte = Encoding.ASCII.GetBytes($"{CreatedAt}-{PreviousHash ?? ""}-{Data}-{Nonce}");
         byte[] outputByte = sha256.ComputeHash(inputByte);
         var resultHash = Convert.ToBase64String(outputByte);
         return resultHash;
-    }
+        }
+
+        public void Mine(int difficulty)
+        {
+            var leadingZeros = new string('0', difficulty);
+            while (this.Hash is null || this.Hash[..difficulty] != leadingZeros)
+            {
+                this.Nonce++;
+                this.Hash = this.CalculateHash();
+            }
+        }
+
     }

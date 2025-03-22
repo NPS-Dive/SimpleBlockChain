@@ -3,6 +3,8 @@
 using BlockChainStart.BlockChains;
 using Newtonsoft.Json;
 
+var beginTime = DateTime.UtcNow.TimeOfDay;
+
 var AmirCoin = new Blockchain();
 AmirCoin.AddNewBlock(new Block(DateTime.UtcNow, null, "Sender:Amir1, Receiver: Mohammad1, Withdrawal: 100, Details: 1details of withdrawal1"));
 AmirCoin.AddNewBlock(new Block(DateTime.UtcNow, null, "Sender:Amir2, Receiver: Mohammad2, Withdrawal: 200, Details: 2details of withdrawal2"));
@@ -11,8 +13,9 @@ AmirCoin.AddNewBlock(new Block(DateTime.UtcNow, null, "Sender:Amir4, Receiver: M
 AmirCoin.AddNewBlock(new Block(DateTime.UtcNow, null, "Sender:Amir5, Receiver: Mohammad5, Withdrawal: 500, Details: 5details of withdrawal5"));
 AmirCoin.AddNewBlock(new Block(DateTime.UtcNow, null, "Sender:Amir6, Receiver: Mohammad6, Withdrawal: 600, Details: 6details of withdrawal6"));
 
+var endTime = DateTime.UtcNow.TimeOfDay;
 
-
+var elapsedTime= endTime - beginTime;
 
 #region Before Manuipulation
 
@@ -23,27 +26,28 @@ Console.WriteLine(resultJson1);
 var hashValidation1 = $"Is Chain Valid:  -> {AmirCoin.IsValid()}";
 
 Console.WriteLine(hashValidation1);
+Console.WriteLine($"Duration:   {elapsedTime} ");
 #endregion
 
 
 
-#region Manipulation
+//#region Manipulation
 
-Console.WriteLine("--- manipulation is coming ---");
+//Console.WriteLine("--- manipulation is coming ---");
 
-//manipulating the blockchain data
-AmirCoin.Chain[4].Data = "Sender:Amir4, Receiver: Myself, Withdrawal: 75000, Details: 4details of withdrawal4";
-#endregion
+////manipulating the blockchain data
+//AmirCoin.Chain[4].Data = "Sender:Amir4, Receiver: Myself, Withdrawal: 75000, Details: 4details of withdrawal4";
+//#endregion
 
 
-#region Check Manipulation
+//#region Check Manipulation
 
-var resultJson2 = JsonConvert.SerializeObject(AmirCoin, Formatting.Indented);
-Console.WriteLine(resultJson2);
-var hashValidation2 = $"Is Chain Valid:  -> {AmirCoin.IsValid()}";
-Console.WriteLine(hashValidation2);
+//var resultJson2 = JsonConvert.SerializeObject(AmirCoin, Formatting.Indented);
+//Console.WriteLine(resultJson2);
+//var hashValidation2 = $"Is Chain Valid:  -> {AmirCoin.IsValid()}";
+//Console.WriteLine(hashValidation2);
 
-#endregion
+//#endregion
 
 
 

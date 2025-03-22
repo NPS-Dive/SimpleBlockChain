@@ -3,7 +3,7 @@
 public class Blockchain
     {
     public IList<Block> Chain { get; set; }
-
+    public int Difficulty { get; set; } = 3;
 
     #region Constructor
 
@@ -46,7 +46,7 @@ public class Blockchain
         var latestBlock = GetLatestBlock();
         newBlock.Index = latestBlock.Index + 1;
         newBlock.PreviousHash = latestBlock.Hash;
-        newBlock.Hash = newBlock.CalculateHash();
+        newBlock.Mine(this.Difficulty);
         Chain.Add(newBlock);
         }
 
